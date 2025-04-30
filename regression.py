@@ -33,7 +33,7 @@ models = {
     'XGBoost': xgb.XGBRegressor(n_estimators=100, objective='reg:squarederror', random_state=42)
 }
 
-# 6. Training and Evaluating
+# Training and Evaluating
 def get_rmse(y_true, y_pred):
     return np.sqrt(mean_squared_error(y_true, y_pred))
 
@@ -54,7 +54,7 @@ for vec_name, (Xtr, Xte) in vectorizers.items():
         results[key] = rmse
         print(f"{key}: RMSE = {rmse:.4f}")
 
-# 7. Plotting Results
+# Plotting Results
 plt.figure(figsize=(15, 7))
 plt.barh(list(results.keys()), list(results.values()))
 plt.xlabel("Root Mean Squared Error (Lower is better)")
