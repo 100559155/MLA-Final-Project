@@ -1,6 +1,4 @@
 # regression.py
-
-# Install necessary packages before running:
 # pip install pandas scikit-learn nltk gensim xgboost matplotlib
 
 import pandas as pd
@@ -24,10 +22,10 @@ from nltk.corpus import stopwords
 # Download stopwords
 nltk.download('stopwords')
 
-# 1. Load the data
+# Load the data
 movies_df = pd.read_csv('/mnt/data/5kmovies_preprocssed.csv')
 
-# 5. Modeling
+# Modeling
 models = {
     'LinearRegression': LinearRegression(),
     'Ridge': Ridge(alpha=1.0),
