@@ -104,17 +104,27 @@ One thing we noted in our dataset is that the majority of movies have an average
 
 
 ## Task 3: Implementation of a dashboard
-The dashboard task was realized by using the python library Dash, which has built-in visualization tools for our final graphs which were 1 histogram and 2 scatterplots. The group imported the trained MLA models for each vectorization technique using .pkl files, which preserve the predictive abilities of each type of model using its given vectorization technique and the imported movie reviews which it was trained on. The .pkl files used were with the BoW, LDA, and Textblob Sentiment vectorization techniques. 
+The dashboard task was realized by using the python library Dash, which has built-in visualization tools for our final graphs which were 1 histogram and 2 scatterplots. The group imported the trained MLA models for each vectorization technique using .pkl files, which preserve the predictive abilities of each type of model using its given vectorization technique and the imported movie reviews which it was trained on. The .pkl files used were with the BoW, LDA, and Textblob Sentiment vectorization techniques. The dashboard displays 3 graphs, as mentioned previously: the first graph displayed at the top of the user’s browser displays the predicted rating based on each vectorization technique: BoW, TF-IDF, LDA, and Word2Vec. Thus, the user can see in real time how their word usage is being inputted to the machine learning model and analyzed into the form of a predicted rating. Directly below this graph is another one that displays the historical rating data of the user based on how many times they input a value into the review textbox, shown on the top-left. 
+In addition, the dashboard takes in a review from a user on a pretrained model and uses that to analyze sentiment scores, which is displayed on the top-right side of the user’s screen. This is based on word polarity where words are either classified negative, positive or neutral. Movie selection is based on available movies (movies used for training and vectorizing models), this prompts the dash to display current average rating and review count. After the user puts in a review, it automates preprocessing (lemmatization, stopword removal) in addition to sentiment analysis. 
+
+The visual analytics includes:
+1. Rating comparison: *Bar chart showing all model predictions* 
+2. Sentiment Breakdown: *Pie chart of Sentiment distribution* 
+3. Historical Trends: *Line graph of past ratings*
+4. Word Cloud: *Visual representation of Key review terms*
+5. Model Performance: *Scatter plots with RMSE/R2 Metrics*
 
 
 ## Section 4: Acknowledgement of Authorship 
 
 **Task 1 References:**
+
 *Text vectorization examples*
 
 SpaCy Tutorial from class, Author: Jerónimo Arenas-García, Date: Feb, 2024
 
 **Task 2 References:**
+
 *K-Best regression model set up and pipeline execution code*
 
 Rawanreda. “Feature Selection Techniques Tutorial.” Kaggle, Kaggle, 22 June 2020, www.kaggle.com/code/rawanreda/feature-selection-techniques-tutorial.  
@@ -125,6 +135,7 @@ Rawanreda. “Feature Selection Techniques Tutorial.” Kaggle, Kaggle, 22 June 
 Bisman. “Logistic Regression - Bow and TFIDF.” Kaggle, Kaggle, 8 July 2019, [www.kaggle.com/code/bisman/logistic-regression-bow-and-tfidf](url).  
 
 **Task 3 References:** 
+
 *Set up code for implementing the python dashboard*
 
 Castillo, Dylan. Develop Data Visualization Interfaces in Python With Dash. 2 Feb. 2025, [realpython.com/python-dash](url). 
