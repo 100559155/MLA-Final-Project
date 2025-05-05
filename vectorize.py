@@ -145,7 +145,3 @@ if __name__ == '__main__':
 
     #weaker frequency analysis compared to rating.
     #maybe sentiment analysis ?
-
-
-
-
