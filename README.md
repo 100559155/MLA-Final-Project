@@ -59,24 +59,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Pros: Quick and intuitive.
 - Cons: Oversimplifies nuanced sentiment.
 
-Results and Analysis
-Feature
-Correlation with Rating
-Sentiment - aware TF-IDF
-0.2539
-TextBlob Sentiment
-0.2459  
-TF-IDF (raw)
-0.2309 
-Bow
- 0.1967   
-Word2Vec (Spacy)
- -0.0254 
-Word2Vec (Google)
- -0.1180
-LDA Topic
-0.0590
-
+# Results and Analysis
+![Screenshot 2025-05-05 at 2 21 36 PM](https://github.com/user-attachments/assets/e3f7cb98-f822-45f9-89d1-17b33ee2db48)
 
 The Sentiment-aware TF-IDF had the highest correlation with rating, validating our hypothesis that sentiment is a key factor. Surprisingly, Word2Vec models underperformed, likely due to domain mismatch and the information loss from averaging word vectors. LDA showed potential for interpretability but lacked predictive power.
 
@@ -98,28 +82,7 @@ The Random Forest model uses multiple decision trees to improve the accuracy of 
 
 # Comparison of Models
 The below data is also available in our GitHub repository under the name “mla_train_analysis.csv.”
-Model
-RMSE
-R2
-BoW Average
-0.8322192519424273
-0.040291220639034675
-TF-IDF Average
-0.8309602144920194
-0.04319284851163685
-Word2Vec Average
-0.8503305543620983
--0.0019349368007830492
-Google Word2Vec Average
-0.8504060001440489
--0.0021127385223169703
-TextBlob Sentiment
-0.8253004474639026
-0.056182311388273454
-LDA Topic Distribution
-0.7924860235940109
-0.1297437026104914
-
+![Screenshot 2025-05-05 at 2 22 02 PM](https://github.com/user-attachments/assets/698a06d9-f414-4594-b88d-120ecbab9867)
 
 	RMSE is in the range 0 to infinity where numbers closest to 0 mean stronger correlation and R-Squared is in the range negative infinity to 1. If R-Squared equals 1 then the predictions are perfect, if it equals 0 then the model does no better than predicting the mean of the target, and if it is less than 0 then the model is worse than using the mean predictor. RMSE is more sensitive to outliers because it squares the errors. 
 # Analysis of Results 
@@ -153,12 +116,12 @@ SpaCy Tutorial from class, Author: Jerónimo Arenas-García, Date: Feb, 2024
 **Task 2 References:**
 *K-Best regression model set up and pipeline execution code*
 Rawanreda. “Feature Selection Techniques Tutorial.” Kaggle, Kaggle, 22 June 2020, www.kaggle.com/code/rawanreda/feature-selection-techniques-tutorial.  
-“Selectkbest.” Scikit, scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html.  Accessed 5 May 2025. 
+“Selectkbest.” Scikit, [scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html](url).  Accessed 5 May 2025. 
 
 *Adding BoW and TF-IDF vectorization models into training code*
-Bisman. “Logistic Regression - Bow and TFIDF.” Kaggle, Kaggle, 8 July 2019, www.kaggle.com/code/bisman/logistic-regression-bow-and-tfidf.  
+Bisman. “Logistic Regression - Bow and TFIDF.” Kaggle, Kaggle, 8 July 2019, [www.kaggle.com/code/bisman/logistic-regression-bow-and-tfidf](url).  
 
 **Task 3 References:** 
 *Set up code for implementing the python dashboard*
-Castillo, Dylan. Develop Data Visualization Interfaces in Python With Dash. 2 Feb. 2025, realpython.com/python-dash. 
+Castillo, Dylan. Develop Data Visualization Interfaces in Python With Dash. 2 Feb. 2025, [realpython.com/python-dash](url). 
 
