@@ -111,17 +111,21 @@ The dashboard task was realized by using the python library Dash, which has buil
 
 **Task 1 References:**
 *Text vectorization examples*
+
 SpaCy Tutorial from class, Author: Jerónimo Arenas-García, Date: Feb, 2024
 
 **Task 2 References:**
 *K-Best regression model set up and pipeline execution code*
+
 Rawanreda. “Feature Selection Techniques Tutorial.” Kaggle, Kaggle, 22 June 2020, www.kaggle.com/code/rawanreda/feature-selection-techniques-tutorial.  
 “Selectkbest.” Scikit, [scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html](url).  Accessed 5 May 2025. 
 
 *Adding BoW and TF-IDF vectorization models into training code*
+
 Bisman. “Logistic Regression - Bow and TFIDF.” Kaggle, Kaggle, 8 July 2019, [www.kaggle.com/code/bisman/logistic-regression-bow-and-tfidf](url).  
 
 **Task 3 References:** 
 *Set up code for implementing the python dashboard*
+
 Castillo, Dylan. Develop Data Visualization Interfaces in Python With Dash. 2 Feb. 2025, [realpython.com/python-dash](url). 
 
