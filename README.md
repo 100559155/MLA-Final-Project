@@ -19,14 +19,14 @@ This step was essential to eliminate noise and ensure high-quality input for vec
 
 # Vectorization Strategies
 After preprocessing, we applied the following strategies to convert the cleaned text into numerical vectors:
-** Bag of Words (BoW) **
+**Bag of Words (BoW)**
 - Technique: Counted word frequencies across documents.
 - Why: Simple baseline, interpretable.
 - Result: Correlation with rating = 0.1967.
 - Pros: Easy to implement, good baseline.
 - Cons: Ignore context and semantic meaning.
 
-** TF-IDF (with and without sentiment integration) **
+**TF-IDF (with and without sentiment integration)**
 - Technique: Weighted rare but meaningful words higher.
 - Sentiment extension: Integrated SentiWordNet scores to capture emotional polarity.
 - Result:
@@ -35,7 +35,7 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Pros: Strong predictive quality, emphasizes unique, sentiment-laden words.
 - Cons: Still bag-of-words-based; lacks deep semantic context.
 
-** Word2Vec (spaCy and Google’s model (billions of trained tokens)) **
+**Word2Vec (spaCy and Google’s model (billions of trained tokens))**
 - In this section to be positively evaluated, we also used a Google trained token called “GoogleNews-vectors-negative300”  to provide further analysis into words and sentiment. 
 - Technique: Averaged word embeddings to create document vectors.
 "Google News embeddings are trained on formal news text, while movie reviews often contain slang, informal language, or sarcasm."
@@ -45,7 +45,7 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Pros: Encodes word meaning.
 - Cons: Averaging diluted specific meanings; poor correlation due to context loss.
 
-** Topic Modeling (LDA) **
+**Topic Modeling (LDA)**
 - Technique: Trained Latent Dirichlet Allocation with 15 topics and 40 passes.
 - Result:
   - Coherence Score: 0.4040
@@ -53,7 +53,7 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Pros: Great for interpreting thematic structures.
 - Cons: Weak correlation to numeric ratings; topics may not align with sentiment.
 
-** TextBlob Sentiment Scores **
+**TextBlob Sentiment Scores**
 - Technique: Polarity scores from TextBlob.
 - Result: Correlation = 0.2459
 - Pros: Quick and intuitive.
@@ -123,17 +123,17 @@ LDA Topic Distribution
 
 	RMSE is in the range 0 to infinity where numbers closest to 0 mean stronger correlation and R-Squared is in the range negative infinity to 1. If R-Squared equals 1 then the predictions are perfect, if it equals 0 then the model does no better than predicting the mean of the target, and if it is less than 0 then the model is worse than using the mean predictor. RMSE is more sensitive to outliers because it squares the errors. 
 # Analysis of Results 
-	** BoW **
+**BoW** 
 ~4% of variance explained, and relatively high error.
-	TF-IDF
+	**TF-IDF**
 Slightly better than BoW but generally similar results.
-	** Word2Vec **
+**Word2Vec**
 This result is worse than the mean predictor. The RMSE is higher than previous examples and the R² is negative, meaning the model performs worse than predicting the average of the target variable.
-	** Google Word2Vec **
+**Google Word2Vec**
 Slightly worse than Word2Vec but generally similar results.
-	** TextBlob **
+**TextBlob**
 Better results than BoW and TF-IDF but still only explains 5.6% of the variance in the model.
-	** LDA Topic Distribution **
+**LDA Topic Distribution**
 This model had the best performance out of the group (lowest RMSE and highest R-Squared), explaining approximately 13% of the variance.
 
 As we can see from the table and the analysis, LDA Topic Distribution was the strongest method for the Random Forest model. We believe LDA performed best because of the way it represents the text itself. LDA captures documents as distributions over topics which provide a lower-dimensional and more meaningful summary of the review text. This means that the results are likely to align better with the target variable and help with creating more nuanced predictions. LDA is also best with longer texts and therefore may have been less effective for movies with few reviews. 
@@ -146,19 +146,19 @@ The dashboard task was realized by using the python library Dash, which has buil
 
 ## Section 4: Acknowledgement of Authorship 
 
-** Task 1 References: **
-* Text vectorization examples *
+**Task 1 References:**
+*Text vectorization examples*
 SpaCy Tutorial from class, Author: Jerónimo Arenas-García, Date: Feb, 2024
 
-** Task 2 References: **
-* K-Best regression model set up and pipeline execution code *
+**Task 2 References:**
+*K-Best regression model set up and pipeline execution code*
 Rawanreda. “Feature Selection Techniques Tutorial.” Kaggle, Kaggle, 22 June 2020, www.kaggle.com/code/rawanreda/feature-selection-techniques-tutorial.  
 “Selectkbest.” Scikit, scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html.  Accessed 5 May 2025. 
 
-* Adding BoW and TF-IDF vectorization models into training code *
+*Adding BoW and TF-IDF vectorization models into training code*
 Bisman. “Logistic Regression - Bow and TFIDF.” Kaggle, Kaggle, 8 July 2019, www.kaggle.com/code/bisman/logistic-regression-bow-and-tfidf.  
 
-** Task 3 References: ** 
-* Set up code for implementing the python dashboard *
+**Task 3 References:** 
+*Set up code for implementing the python dashboard*
 Castillo, Dylan. Develop Data Visualization Interfaces in Python With Dash. 2 Feb. 2025, realpython.com/python-dash. 
 
