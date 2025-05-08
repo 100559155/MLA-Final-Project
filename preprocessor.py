@@ -1,3 +1,6 @@
+"""
+This file preprocesses the text from the CSV file of movie data created by movie_scraper.py
+"""
 import spacy
 import string
 from spacy.lang.en.stop_words import STOP_WORDS
@@ -6,6 +9,19 @@ nlp = spacy.load("en_core_web_sm")
 from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
 
 def preprocess_text(text):
+    """
+    preprocess_text - clean the review data
+    
+    Purpose:
+        This method cleans the review data by tokenizing, removing punctuation, removing stopwords,
+        and removing non-alphanumeric characters.
+
+    Parameters:
+        test (string): review text
+
+    Returns:
+        Returns a list of the tokens 
+    """
     doc = nlp(text.lower())
     tokens = [
         token.lemma_ for token in doc
