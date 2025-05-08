@@ -1,3 +1,11 @@
+'''
+MLA_Train.py is used for training the matrix and token we have using Ridge Regression to be utilized by our dashboard. 
+Steps further described in the method 
+Returns results (RMSE, R2 and best model)
+Plots graph 
+Saves model pkl file for further use
+'''
+
 #vectorization code for movies1.csv
 import matplotlib.pyplot as plt
 from pandas.core.interchange.dataframe_protocol import DataFrame
@@ -61,15 +69,15 @@ def mla_model(X, y, modelname):
     mla_model - Train and evaluate a machine learning regression model using Ridge regression and pipeline optimization.
 
     Purpose:
-        This method performs regression analysis using Ridge regression on the input features `X` to predict the target variable `y`.
+        This method performs regression analysis using Ridge regression on the input features "X" to predict the target variable "y".
         It employs a machine learning pipeline that includes feature scaling, feature selection, and model training.
         GridSearchCV is used for hyperparameter tuning of the Ridge regression alpha value.
         The model's performance is evaluated using Root Mean Squared Error (RMSE) and R^2 score.
         A scatter plot of actual vs predicted ratings is displayed and saved as a PNG image.
-        The trained best model is returned for future use or saving.
+        The trained best model is returned for future use @ the dashboard, via pkl file.
 
     Parameters:
-        X (numpy.ndarray): Feature matrix used for training, typically vectorized text features (e.g., BoW, TF-IDF, LDA, etc.).
+        X (numpy.ndarray): Feature matrix used for training, typically vectorized text features (e.g., BoW, TF-IDF, LDA, Word2Vec.).
         y (list or numpy.ndarray): Target values (ratings) corresponding to the input documents.
         modelname (str): A string identifier for the model being trained, used for labeling outputs and saving results.
 
@@ -80,10 +88,10 @@ def mla_model(X, y, modelname):
             - best_estimator (sklearn.pipeline.Pipeline): The best performing model pipeline after hyperparameter tuning.
     """
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    pipe = Pipeline([('scaler', StandardScaler()), ('select', SelectKBest(f_regression, k="all")),('ridge', Ridge())])
+    pipe = Pipeline([('scaler', StandardScaler()), ('select', SelectKBest(f_regression, k="all")),('ridge', Ridge())]) #creation of a pipeline
     grid = {'ridge__alpha':[0.01, 0.1, 1.0, 10.0, 100.0]}
     grids = GridSearchCV(pipe, grid, scoring='neg_mean_squared_error', cv=5)
-    grids.fit(X_train,y_train)
+    grids.fit(X_train,y_train) #training 
     y_predicted = grids.predict(X_test)
     rmse = np.sqrt(mean_squared_error(y_test, y_predicted))
     r2 = r2_score(y_test, y_predicted)
@@ -107,7 +115,7 @@ def mla_model(X, y, modelname):
 
     return rmse, r2, grids.best_estimator_
 
-df = pd.read_csv("5kmovies_preprocssed.csv")
+df = pd.read_csv("5kmovies_preprocssed.csv")  #reads the csv we have of the lemmatized movie rating ie, after the preprocessing pipeline
 docs = df["cleaned_reviews"].tolist()
 ratings = df["Rating"].tolist()
 
@@ -124,17 +132,23 @@ for model_name, column_name in [
     rmse, r2, best_model = mla_model(result_df[column_name].values.reshape(-1,1), ratings, model_name)
     results.append([model_name, rmse, r2])
     joblib.dump(best_model,f"{model_name}_model.pkl")
+    
 ## MLA For LDA Technique
 
 ## ** Imported from Vectorize.py @self Citation ** ##
 tokenization = [doc.split() for doc in docs]
 dictionary = corpora.Dictionary(tokenization)
 corpus = [dictionary.doc2bow(text) for text in tokenization]
-
+'''
+The above two lines and the lower three lines are directly copied from vectorize.py where we used to vectorize it via LDA since we wanted it
+to reaggregate itself for further use and precise resutls. 
+@self citation
+et al
+'''
 lda_model = models.LdaModel(corpus, num_topics=15, id2word=dictionary, passes=40)
 lda_topics = [lda_model.get_document_topics(bow) for bow in corpus]
 all_topic_distributions = [lda_model.get_document_topics(corpus[i], minimum_probability=0.0) for i in
-                           range(len(corpus))]
+                           range(len(corpus))] #further training of LDA, to get precise result, over 15 topics 
 topic_matrix = np.array([[prob for _, prob in doc] for doc in all_topic_distributions])
 
 rmse, r2, best_model = mla_model(topic_matrix, ratings, "LDA Topic Distribution")
@@ -146,18 +160,3 @@ results_df.to_csv("mla_train_analysis.csv", index=False)
 joblib.dump(best_model, f"LDA_Topic_Model.pkl")
 
 ## End ##
-
-
-
-
-### THE above result is for a ridge
-
-
-
-# plt.figure(figsize=(15, 7))
-# plt.barh(list(results.keys()), list(results.values()))
-# plt.xlabel("Root Mean Squared Error")
-# plt.title("Comparison of Models and Vectorizations on Movie Reviews")
-# plt.grid(True)
-# plt.tight_layout()
-# plt.show()'''
