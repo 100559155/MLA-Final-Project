@@ -1,5 +1,42 @@
-#code Cited from MLA Train.py file
-#vectorization code for movies1.csv
+'''
+File: MLA_Train_RandomForest.py
+code Cited from MLA Train.py file
+vectorization code for movies1.csv
+Purpose:
+    This script performs machine learning analysis on movie review data using multiple text vectorization techniques
+    including Bag-of-Words (BoW), TF-IDF, Word2Vec (spaCy and Google News vectors), TextBlob sentiment scores, and
+    Latent Dirichlet Allocation (LDA). It uses Random Forest regression to model and predict movie ratings based on
+    these vector representations. Model performance is evaluated using Root Mean Squared Error (RMSE) and R^2 score.
+
+    The script loads pre-processed review and vector data from movie_preprocessed.csv, applies cross-validated grid search
+    over a defined hyperparameter space, and visualizes actual vs predicted performance for each model.
+    It also supports exporting model performance summaries to a CSV file.
+
+Modules Used:
+    - pandas, numpy, matplotlib, sklearn (feature extraction, model selection, regression, metrics)
+    - nltk, gensim, spacy, textblob (for NLP and sentiment analysis)
+    - joblib (optional model saving), ast, scipy.stats (statistics)
+    - RandomForestRegressor (used as the primary regression model)
+    - GridSearchCV for hyperparameter optimization
+
+Key Functions:
+    - mla_model(X: np.ndarray, y: List[float], modelname: str) -> Tuple[float, float, sklearn.Pipeline]:
+        Trains a Random Forest regressor using a pipeline and cross-validation on the provided feature matrix X
+        and target ratings y. Returns RMSE, R^2, and the best estimator.
+
+Input:
+    - "5kmovies_preprocssed.csv": Contains cleaned text reviews and movie ratings.
+    - "movie_nlp_analysis.csv": Contains averaged vectorized text features and sentiment scores for each review.
+
+Output:
+    - Scatter plots of actual vs predicted ratings per vectorization method.
+    - "mla_train_analysis_RandomForest.csv": CSV file with RMSE and R^2 scores for each method.
+
+Note:
+    Code and logic adapted from "MLA_Train.py" and "Vectorize.py" as part of a broader NLP movie review analysis project.
+    Extensive grid search may be computationally expensive due to Random Forest tuning across multiple parameter combinations.
+
+'''
 import matplotlib.pyplot as plt
 from pandas.core.interchange.dataframe_protocol import DataFrame
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
@@ -7,9 +44,6 @@ import pandas as pd
 from io import StringIO
 import numpy as np
 import nltk
-#nltk.download('wordnet')
-#nltk.download('sentiwordnet')
-#nltk.download('punkt')
 from nltk.corpus import sentiwordnet as swn
 from nltk.corpus import wordnet as wn
 import gensim.downloader as api
@@ -31,34 +65,10 @@ from yapftests.yapf_test_helper import YAPFTest
 from sklearn.ensemble import RandomForestRegressor
 nlp = spacy.load('en_core_web_sm')
 
-'''
-def mla_model(X,Y):
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
-    model = LinearRegression()
-    model.fit(X_train, Y_train)
-    Y_pred = model.predict(X_test)
-    mse = mean_squared_error(Y_test, Y_pred)
-    print(mse,"\n")
-    return mse
-
-result_df = pd.read_csv("movie_nlp_analysis.csv")
-ratings = result_df["Rating"].tolist()
-results = {}
-
-print("BoW Results:")
-mla_model(ratings,"BoW Avg")
-print("TF-IDF Results:")
-mla_model(ratings,"TF-IDF Avg" )
-print("Word2Vec spaCy Results:")
-mla_model(ratings,"Word2Vec spaCy Avg" )
-print("Google Word2Vec Results:")
-mla_model(ratings,"Google Word2Vec Avg:")
-'''
-
 print(f"\n\n ****Newer MLA Model***\n\n")
 def mla_model(X, y, modelname):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    pipe = Pipeline([('scaler', StandardScaler()), ('select', SelectKBest(f_regression, k="all")),('rf', RandomForestRegressor(random_state=42))])
+    pipe = Pipeline([('scaler', StandardScaler()), ('select', SelectKBest(f_regression, k="all")),('rf', RandomForestRegressor(random_state=42))]) 
     grid = {
         'rf__n_estimators': [100,200,300,400,500],
         'rf__max_depth': [None, 10, 20, 30, 40],
