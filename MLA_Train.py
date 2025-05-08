@@ -4,6 +4,24 @@ Steps further described in the method
 Returns results (RMSE, R2 and best model)
 Plots graph 
 Saves model pkl file for further use
+
+Modules Used:
+    - pandas, numpy, matplotlib, sklearn (feature extraction, model selection, regression, metrics)
+    - nltk, gensim, spacy, textblob (for NLP and sentiment analysis)
+    - joblib (optional model saving), ast, scipy.stats (statistics)
+    - RidgeRegression (used as the primary regression model)
+    - GridSearchCV for hyperparameter optimization
+Key Functions:
+    - mla_model(X: np.ndarray, y: List[float], modelname: str) -> Tuple[float, float, sklearn.Pipeline]:
+        Trains a Ridge regressor using a pipeline and cross-validation on the provided feature matrix X
+        and target ratings y. Returns RMSE, R^2, and the best estimator.
+Input:
+    - "5kmovies_preprocssed.csv": Contains cleaned text reviews and movie ratings.
+    - "movie_nlp_analysis.csv": Contains averaged vectorized text features and sentiment scores for each review.
+Output:
+    - Scatter plots of actual vs predicted ratings per vectorization method.
+    - "mla_train_analysis.csv": CSV file with RMSE and R^2 scores for each method.
+
 '''
 
 #vectorization code for movies1.csv
@@ -15,9 +33,6 @@ from io import StringIO
 import numpy as np
 import os
 import nltk
-#nltk.download('wordnet')
-#nltk.download('sentiwordnet')
-#nltk.download('punkt')
 from nltk.corpus import sentiwordnet as swn
 from nltk.corpus import wordnet as wn
 import gensim.downloader as api
@@ -38,31 +53,6 @@ from sklearn.pipeline import Pipeline
 from yapftests.yapf_test_helper import YAPFTest
 
 nlp = spacy.load('en_core_web_sm')
-
-''' Previous attempt of simple linear regression model 
-def mla_model(X,Y):
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
-    model = LinearRegression()
-    model.fit(X_train, Y_train)
-    Y_pred = model.predict(X_test)
-    mse = mean_squared_error(Y_test, Y_pred)
-    print(mse,"\n")
-    return mse
-
-result_df = pd.read_csv("movie_nlp_analysis.csv")
-ratings = result_df["Rating"].tolist()
-results = {}
-
-print("BoW Results:")
-mla_model(ratings,"BoW Avg")
-print("TF-IDF Results:")
-mla_model(ratings,"TF-IDF Avg" )
-print("Word2Vec spaCy Results:")
-mla_model(ratings,"Word2Vec spaCy Avg" )
-print("Google Word2Vec Results:")
-mla_model(ratings,"Google Word2Vec Avg:")
-'''
-
 print(f"\n\n ****Newer MLA Model***\n\n")
 def mla_model(X, y, modelname):
         """
