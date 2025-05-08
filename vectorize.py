@@ -1,5 +1,6 @@
-
-#vectorization code for movies1.csv
+"""
+Code to vectorize the pre-processed review text data from 5kmovies_preprocssed.csv
+"""
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import pandas as pd
 import numpy as np
@@ -20,6 +21,18 @@ from textblob import TextBlob
 nlp = spacy.load('en_core_web_sm')
 
 def get_sentiment(word):
+    """
+    get_sentiment - return sentiment score of word
+    
+    Purpose:
+        This method calculates the sentiment score of the word
+
+    Parameters:
+        word (string): word we are calculating the sentiment score of
+
+    Returns:
+        Returns the sentiment score
+    """
     synsets = wn.synsets(word)
     if synsets:
         synset = synsets[0]
@@ -28,22 +41,44 @@ def get_sentiment(word):
     return 0.0
 
 def document_vector_largermodel(doc):
+    """
+    document_vector_largermodel - vector for the given document
+    
+    Purpose:
+        This method returns the vector for a given document for Google Word2Vec
 
+    Parameters:
+        doc (string): review text we are vectorizing
+
+    Returns:
+        Returns the average score for each token
+    """    
     tokens = doc.split()
     vectors = [word2vec[word] for word in tokens if word in word2vec]
     if vectors:
         return np.mean(vectors, axis=0)
     else:
         return np.zeros(300)
+        
 def document_vector(doc):
-    #tokens = doc.split()
-    #vectors = [model[word] for word in tokens if word in model]
+    """
+    document_vector - vector for the given document
+    
+    Purpose:
+        This method returns the vector for a given document for Word2Vec
+
+    Parameters:
+        doc (string): review text we are vectorizing
+
+    Returns:
+        Returns the vector using nlp function
+    """   
     return nlp(doc).vector
 
 if __name__ == '__main__':
 
-    #preprocessing and vectorization (elementary steps )
-    df = pd.read_csv("movies1.csv")
+    # preprocessing and vectorization (elementary steps )
+    df = pd.read_csv("5kmovies_preprocssed.csv")
     df["doc_vector"] = df["cleaned_reviews"].apply(lambda x: nlp(x).vector)
     vec_df = pd.DataFrame(df["doc_vector"].to_list())
     vec_df["ratings"] = df["Rating"]
@@ -59,14 +94,7 @@ if __name__ == '__main__':
     bow_vector = CountVectorizer()
     bow_matrix = bow_vector.fit_transform(docs)
     bow_words = bow_vector.get_feature_names_out()
-    '''
-    for i in range(len(bow_words)):
-        print(f"\nWords for doc {i+1}:")
-        doc_vector = bow_matrix[i]
-        for idx in doc_vector.nonzero()[1]:
-            print(f"{bow_words[idx]} : {doc_vector[0, idx]}")
-    '''
-
+    
     #TF-IDF
 
     tfidf_vector = TfidfVectorizer()
@@ -77,18 +105,6 @@ if __name__ == '__main__':
     net_sentiment = tfidf_matrix.dot(sentimentscore)
     correlation = np.corrcoef(net_sentiment, ratings)[0,1]
     print(f"Correlation between sentiment-aware TF-IDF and rating: {correlation:.4f}")
-
-    '''
-    for i in range(len(tfidf_words)):  # First 3 documents
-        print(f"\nTop TF-IDF words for doc {i+1}:")
-        doc_vector = tfidf_matrix[i]
-        sorted_indices = doc_vector.toarray()[0].argsort()[::-1]
-        for idx in sorted_indices[:5]:
-            word = tfidf_words[idx]
-            score = doc_vector[0, idx]
-            if score > 0:
-                print(f"{word}: {score:.4f}")
-    '''
 
     #word2Vec/GloVe
 
@@ -143,5 +159,3 @@ if __name__ == '__main__':
     correlation = result_df.corr(numeric_only=True)
     print(correlation["Rating"])
 
-    #weaker frequency analysis compared to rating.
-    #maybe sentiment analysis ?
