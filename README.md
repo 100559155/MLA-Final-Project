@@ -2,8 +2,8 @@
 ### April Porter (100554572), Lucia Enriquez (100559155), and Filimon Keleta (100559040)
 
 ## Task 1: Text Preprocessing and Vectorization 
-The file "movie_scraper.py" is the code we used to generate the dataset.
-The file "5kmovies.csv" includes the name, ratings, and reviews of every movie we used. 
+	- The file "movie_scraper.py" is the code we used to generate the dataset.
+	- The file "5kmovies.csv" includes the name, ratings, and reviews of every movie we used. 
 
 We now explore the use of Natural Language Processing (NLP) techniques to understand patterns in user reviews of over 5,000 movies. The goal was to investigate whether textual sentiment and content could reliably explain or predict the numeric movie ratings. Several vectorization strategies were used to convert review texts into numerical form, followed by a correlation analysis to understand the strength of their relationships with the rating. The analysis takes a comprehensive approach: we preprocess the reviews, test different text vectorization strategies (e.g., BoW, TF-IDF, Word2Vec, LDA), and evaluate their effectiveness in terms of correlation with the user-assigned movie ratings.
 "The textual sentiment and structure of a movie review contain enough information to reflect or predict the reviewer's numeric rating."
@@ -13,9 +13,9 @@ We posited that:
 - Context-aware vectorizations (e.g., Word2Vec, TF-IDF with sentiment) would provide more accurate representations than basic methods like BoW.
 
 # Preprocessing Pipeline
-The file "5k_movies_preprocssed.csv" includes the movie data after pre-processing.
-The file "preprocessor.py" has the code we used to prep-process the movie reviews.
-The file "movie_nlp_analysis.csv" has the resulting data from the tokenization process.
+	- The file "5k_movies_preprocssed.csv" includes the movie data after pre-processing.
+	- The file "preprocessor.py" has the code we used to prep-process the movie reviews.
+	- The file "movie_nlp_analysis.csv" has the resulting data from the tokenization process.
 
 Before any vectorization, the reviews underwent a cleaning and normalization pipeline using spaCy. The following steps were applied:
 - Lowercasing: Standardizes the text for consistent vectorization.
@@ -25,11 +25,11 @@ Before any vectorization, the reviews underwent a cleaning and normalization pip
 This step was essential to eliminate noise and ensure high-quality input for vector models. Sample output of preprocessing included tokens like ["film", "beautiful", "performance"], which are semantically strong and focused.
 
 # Vectorization Strategies
-The file "vectorize.py" has the code we used to vectorize the movie reviews.
+	- The file "vectorize.py" has the code we used to vectorize the movie reviews.
 
 After preprocessing, we applied the following strategies to convert the cleaned text into numerical vectors:
 **Bag of Words (BoW)**
-The file "BoW Avg_model.pkl" has the ML model generated for this section.
+	- The file "BoW Avg_model.pkl" has the ML model generated for this section.
 
 - Technique: Counted word frequencies across documents.
 - Why: Simple baseline, interpretable.
@@ -38,7 +38,7 @@ The file "BoW Avg_model.pkl" has the ML model generated for this section.
 - Cons: Ignore context and semantic meaning.
 
 **TF-IDF (with and without sentiment integration)**
-The file "TF-IDF Avg_model.pkl" has the ML model generated for this section.
+	- The file "TF-IDF Avg_model.pkl" has the ML model generated for this section.
 
 - Technique: Weighted rare but meaningful words higher.
 - Sentiment extension: Integrated SentiWordNet scores to capture emotional polarity.
@@ -49,8 +49,8 @@ The file "TF-IDF Avg_model.pkl" has the ML model generated for this section.
 - Cons: Still bag-of-words-based; lacks deep semantic context.
 
 **Word2Vec (spaCy and Google’s model (billions of trained tokens))**
-The file "Word2Vec Avg_model.pkl" has the ML model generated for this section.
-The file "Google Word2Vec Avg_model.pkl" has the ML model generated for this section.
+	- The file "Word2Vec Avg_model.pkl" has the ML model generated for this section.
+	- The file "Google Word2Vec Avg_model.pkl" has the ML model generated for this section.
 
 - In this section to be positively evaluated, we also used a Google trained token called “GoogleNews-vectors-negative300”  to provide further analysis into words and sentiment. 
 - Technique: Averaged word embeddings to create document vectors.
@@ -62,7 +62,7 @@ The file "Google Word2Vec Avg_model.pkl" has the ML model generated for this sec
 - Cons: Averaging diluted specific meanings; poor correlation due to context loss.
 
 **Topic Modeling (LDA)**
-The file "LDA_Topic_Model.pkl" has the ML model generated for this section.
+	- The file "LDA_Topic_Model.pkl" has the ML model generated for this section.
 
 - Technique: Trained Latent Dirichlet Allocation with 15 topics and 40 passes.
 - Result:
@@ -72,7 +72,7 @@ The file "LDA_Topic_Model.pkl" has the ML model generated for this section.
 - Cons: Weak correlation to numeric ratings; topics may not align with sentiment.
 
 **TextBlob Sentiment Scores**
-The file "TextBlob Sentiment_model.pkl" has the ML model generated for this section.
+	- The file "TextBlob Sentiment_model.pkl" has the ML model generated for this section.
 
 - Technique: Polarity scores from TextBlob.
 - Result: Correlation = 0.2459
@@ -99,8 +99,8 @@ Conclusion
 This analysis confirmed that textual sentiment correlates well with user ratings. Traditional models like TF-IDF (when enhanced with sentiment) outperform more complex, unsupervised embeddings like Word2Vec in this task. Preprocessing played a critical role in cleaning the data, and future work should focus on supervised learning techniques and model ensembles to maximize prediction accuracy and interpretability. This demonstrates that even in large, noisy text datasets, relatively simple strategies—if thoughtfully executed—can yield meaningful insights.
 
 ## Task 2: Machine Learning Model 
-The files "ML_Train.py" and "ML_Train_RandomForest.py" have the code we used for this section.
-The files "mla_train_analysis.csv" and "mla_train_analysis_RandomForest.csv" have the resulting data.
+	- The files "ML_Train.py" and "ML_Train_RandomForest.py" have the code we used for this section.
+	- The files "mla_train_analysis.csv" and "mla_train_analysis_RandomForest.csv" have the resulting data.
 
 The aim of our project was to use the data we had generated (the names of movies, their averages ratings, and their reviews) to predict what the rating of the movie would be. In Task 1, we used BoW, TF-IDF, Word2Vec, Google Word2Vec, LDA Topic Modeling, and TextBlob to create vectorizations for the reviews and allow us to use the data for regression. To create the ML model for this project, we used Select K-Best and Linear Regression on each vectorization scheme to determine what would have the strongest correlation. Linear Regression turned out to have fairly weak results so we switched to a Random Forest + Ridge Regression model, which we used for the final results of our project.   
 Select K-Best used the top 100 topics for each movie review and analyzed the root mean-squared error (RMSE) using this training data. We saw low correlation between predicted ratings and actual ratings for each movie using this model and decided to run the same data through a Ridge Regression model to compare its predictive abilities. 
@@ -141,6 +141,8 @@ One thing we noted in our dataset is that the majority of movies have an average
 
 
 ## Task 3: Implementation of a dashboard
+	- The file "dashboard_.py" is our implementation of the dashboard.
+ 
 The dashboard task was realized by using the python library Dash, which has built-in visualization tools for our final graphs which were 1 histogram and 2 scatterplots. The group imported the trained MLA models for each vectorization technique using .pkl files, which preserve the predictive abilities of each type of model using its given vectorization technique and the imported movie reviews which it was trained on. The .pkl files used were with the BoW, LDA, and Textblob Sentiment vectorization techniques. The dashboard displays 3 graphs, as mentioned previously: the first graph displayed at the top of the user’s browser displays the predicted rating based on each vectorization technique: BoW, TF-IDF, LDA, and Word2Vec. Thus, the user can see in real time how their word usage is being inputted to the machine learning model and analyzed into the form of a predicted rating. Directly below this graph is another one that displays the historical rating data of the user based on how many times they input a value into the review textbox, shown on the top-left. 
 In addition, the dashboard takes in a review from a user on a pretrained model and uses that to analyze sentiment scores, which is displayed on the top-right side of the user’s screen. This is based on word polarity where words are either classified negative, positive or neutral. Movie selection is based on available movies (movies used for training and vectorizing models), this prompts the dash to display current average rating and review count. After the user puts in a review, it automates preprocessing (lemmatization, stopword removal) in addition to sentiment analysis. 
 
