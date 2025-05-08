@@ -2,6 +2,9 @@
 ### April Porter (100554572), Lucia Enriquez (100559155), and Filimon Keleta (100559040)
 
 ## Task 1: Text Preprocessing and Vectorization 
+The file "movie_scraper.py" is the code we used to generate the dataset.
+The file "5kmovies.csv" includes the name, ratings, and reviews of every movie we used. 
+
 We now explore the use of Natural Language Processing (NLP) techniques to understand patterns in user reviews of over 5,000 movies. The goal was to investigate whether textual sentiment and content could reliably explain or predict the numeric movie ratings. Several vectorization strategies were used to convert review texts into numerical form, followed by a correlation analysis to understand the strength of their relationships with the rating. The analysis takes a comprehensive approach: we preprocess the reviews, test different text vectorization strategies (e.g., BoW, TF-IDF, Word2Vec, LDA), and evaluate their effectiveness in terms of correlation with the user-assigned movie ratings.
 "The textual sentiment and structure of a movie review contain enough information to reflect or predict the reviewer's numeric rating."
 We posited that:
@@ -10,6 +13,10 @@ We posited that:
 - Context-aware vectorizations (e.g., Word2Vec, TF-IDF with sentiment) would provide more accurate representations than basic methods like BoW.
 
 # Preprocessing Pipeline
+The file "5k_movies_preprocssed.csv" includes the movie data after pre-processing.
+The file "preprocessor.py" has the code we used to prep-process the movie reviews.
+The file "movie_nlp_analysis.csv" has the resulting data from the tokenization process.
+
 Before any vectorization, the reviews underwent a cleaning and normalization pipeline using spaCy. The following steps were applied:
 - Lowercasing: Standardizes the text for consistent vectorization.
 - Punctuation and Stop Word Removal: Filters out common, less informative words.
@@ -18,8 +25,12 @@ Before any vectorization, the reviews underwent a cleaning and normalization pip
 This step was essential to eliminate noise and ensure high-quality input for vector models. Sample output of preprocessing included tokens like ["film", "beautiful", "performance"], which are semantically strong and focused.
 
 # Vectorization Strategies
+The file "vectorize.py" has the code we used to vectorize the movie reviews.
+
 After preprocessing, we applied the following strategies to convert the cleaned text into numerical vectors:
 **Bag of Words (BoW)**
+The file "BoW Avg_model.pkl" has the ML model generated for this section.
+
 - Technique: Counted word frequencies across documents.
 - Why: Simple baseline, interpretable.
 - Result: Correlation with rating = 0.1967.
@@ -27,6 +38,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Ignore context and semantic meaning.
 
 **TF-IDF (with and without sentiment integration)**
+The file "TF-IDF Avg_model.pkl" has the ML model generated for this section.
+
 - Technique: Weighted rare but meaningful words higher.
 - Sentiment extension: Integrated SentiWordNet scores to capture emotional polarity.
 - Result:
@@ -36,6 +49,9 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Still bag-of-words-based; lacks deep semantic context.
 
 **Word2Vec (spaCy and Google’s model (billions of trained tokens))**
+The file "Word2Vec Avg_model.pkl" has the ML model generated for this section.
+The file "Google Word2Vec Avg_model.pkl" has the ML model generated for this section.
+
 - In this section to be positively evaluated, we also used a Google trained token called “GoogleNews-vectors-negative300”  to provide further analysis into words and sentiment. 
 - Technique: Averaged word embeddings to create document vectors.
 "Google News embeddings are trained on formal news text, while movie reviews often contain slang, informal language, or sarcasm."
@@ -46,6 +62,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Averaging diluted specific meanings; poor correlation due to context loss.
 
 **Topic Modeling (LDA)**
+The file "LDA_Topic_Model.pkl" has the ML model generated for this section.
+
 - Technique: Trained Latent Dirichlet Allocation with 15 topics and 40 passes.
 - Result:
   - Coherence Score: 0.4040
@@ -54,6 +72,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Weak correlation to numeric ratings; topics may not align with sentiment.
 
 **TextBlob Sentiment Scores**
+The file "TextBlob Sentiment_model.pkl" has the ML model generated for this section.
+
 - Technique: Polarity scores from TextBlob.
 - Result: Correlation = 0.2459
 - Pros: Quick and intuitive.
@@ -79,6 +99,9 @@ Conclusion
 This analysis confirmed that textual sentiment correlates well with user ratings. Traditional models like TF-IDF (when enhanced with sentiment) outperform more complex, unsupervised embeddings like Word2Vec in this task. Preprocessing played a critical role in cleaning the data, and future work should focus on supervised learning techniques and model ensembles to maximize prediction accuracy and interpretability. This demonstrates that even in large, noisy text datasets, relatively simple strategies—if thoughtfully executed—can yield meaningful insights.
 
 ## Task 2: Machine Learning Model 
+The files "ML_Train.py" and "ML_Train_RandomForest.py" have the code we used for this section.
+The files "mla_train_analysis.csv" and "mla_train_analysis_RandomForest.csv" have the resulting data.
+
 The aim of our project was to use the data we had generated (the names of movies, their averages ratings, and their reviews) to predict what the rating of the movie would be. In Task 1, we used BoW, TF-IDF, Word2Vec, Google Word2Vec, LDA Topic Modeling, and TextBlob to create vectorizations for the reviews and allow us to use the data for regression. To create the ML model for this project, we used Select K-Best and Linear Regression on each vectorization scheme to determine what would have the strongest correlation. Linear Regression turned out to have fairly weak results so we switched to a Random Forest + Ridge Regression model, which we used for the final results of our project.   
 Select K-Best used the top 100 topics for each movie review and analyzed the root mean-squared error (RMSE) using this training data. We saw low correlation between predicted ratings and actual ratings for each movie using this model and decided to run the same data through a Ridge Regression model to compare its predictive abilities. 
 The Ridge Regression Forest model uses multiple decision trees to improve the accuracy of each predictive data point. The model averages each prediction for every movie rating from the different decision trees. The group used the SCIKIT learn package in python which provides tools for Ridge Regression modeling. The RMSE is a calculation taken from subtracting the predicted value from the true value and then dividing the result by the number of data points. To normalize the data, RMSE is the square root of this calculation.
