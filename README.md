@@ -64,6 +64,11 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 
 The Sentiment-aware TF-IDF had the highest correlation with rating, validating our hypothesis that sentiment is a key factor. Surprisingly, Word2Vec models underperformed, likely due to domain mismatch and the information loss from averaging word vectors. LDA showed potential for interpretability but lacked predictive power.
 
+**Model performance as a Visual Representation**
+<img width="991" alt="Screenshot 2025-05-08 at 12 46 22 PM" src="https://github.com/user-attachments/assets/340ef204-d3a8-41ed-a7eb-2bff8a4ad6bb" />
+<img width="988" alt="Screenshot 2025-05-08 at 12 45 34 PM" src="https://github.com/user-attachments/assets/70e2b68f-317f-4558-8926-cc75405f3269" />
+<img width="988" alt="Screenshot 2025-05-08 at 12 45 49 PM" src="https://github.com/user-attachments/assets/1552c137-14b9-4340-bcac-0a2e0b2da3b2" />
+
 # Recommendation
 Based on these findings, the following actions are recommended:
 1. Continue using TF-IDF with sentiment integration for tasks involving review classification or rating prediction.
@@ -74,11 +79,20 @@ Conclusion
 This analysis confirmed that textual sentiment correlates well with user ratings. Traditional models like TF-IDF (when enhanced with sentiment) outperform more complex, unsupervised embeddings like Word2Vec in this task. Preprocessing played a critical role in cleaning the data, and future work should focus on supervised learning techniques and model ensembles to maximize prediction accuracy and interpretability. This demonstrates that even in large, noisy text datasets, relatively simple strategies—if thoughtfully executed—can yield meaningful insights.
 
 ## Task 2: Machine Learning Model 
-The aim of our project was to use the data we had generated (the names of movies, their averages ratings, and their reviews) to predict what the rating of the movie would be. In Task 1, we used BoW, TF-IDF, Word2Vec, Google Word2Vec, LDA Topic Modeling, and TextBlob to create vectorizations for the reviews and allow us to use the data for regression. To create the ML model for this project, we used Select K-Best and Linear Regression on each vectorization scheme to determine what would have the strongest correlation. Linear Regression turned out to have fairly weak results so we switched to a Random Forest model, which we used for the final results of our project.   
-Select K-Best used the top 100 topics for each movie review and analyzed the root mean-squared error (RMSE) using this training data. We saw low correlation between predicted ratings and actual ratings for each movie using this model and decided to run the same data through a Random Forest model to compare its predictive abilities. 
-The Random Forest model uses multiple decision trees to improve the accuracy of each predictive data point. The model averages each prediction for every movie rating from the different decision trees. The group used the SCIKIT learn package in python which provides tools for Random Forest modeling. The RMSE is a calculation taken from subtracting the predicted value from the true value and then dividing the result by the number of data points. To normalize the data, RMSE is the square root of this calculation.
+The aim of our project was to use the data we had generated (the names of movies, their averages ratings, and their reviews) to predict what the rating of the movie would be. In Task 1, we used BoW, TF-IDF, Word2Vec, Google Word2Vec, LDA Topic Modeling, and TextBlob to create vectorizations for the reviews and allow us to use the data for regression. To create the ML model for this project, we used Select K-Best and Linear Regression on each vectorization scheme to determine what would have the strongest correlation. Linear Regression turned out to have fairly weak results so we switched to a Random Forest + Ridge Regression model, which we used for the final results of our project.   
+Select K-Best used the top 100 topics for each movie review and analyzed the root mean-squared error (RMSE) using this training data. We saw low correlation between predicted ratings and actual ratings for each movie using this model and decided to run the same data through a Ridge Regression model to compare its predictive abilities. 
+The Ridge Regression Forest model uses multiple decision trees to improve the accuracy of each predictive data point. The model averages each prediction for every movie rating from the different decision trees. The group used the SCIKIT learn package in python which provides tools for Ridge Regression modeling. The RMSE is a calculation taken from subtracting the predicted value from the true value and then dividing the result by the number of data points. To normalize the data, RMSE is the square root of this calculation.
 
 # Model Creation
+The Ridge Regression model with hyperparameter tuning to predict the movie ratings based on various feature representations of the reviews. It splits the input feature X and labels y into training and testing sets (80/20 splits). A pipeline was defined with three steps, StandardScaler (normalizes the features), SelectKBest (selects the best features using f_regression, though k=’all’ means it uses all features), and Ridge (applies Ridge Regression). We also did Hyperparameter Tuning which uses GridSearchCV to test different values of the regularization parameter alpha for Ridge Regression ([0.01, 0.1, 1.0, 10.0, 100.0]) with 5 -fold cross-validation. To evaluate the model we predict ratings on the test set. 
+
+This calculates and prints the:
+- RMSE (Root Mean Squared Error)
+- R2 Score (Coefficient of determination)
+
+It eventually returns RMSE, R2 Score and the best model from GridSearchCV.
+
+We run the MLA Model on each feature set (Bag of Words, TF-IDF, Word2Vec, Sentiment Scores, and LDA with 15 Topics). For LDA, we extract the topic distribution for each review, and use this topic matrix as input to mla_model for regression analysis. This automates the process of evaluating multiple text-based feature extraction techniques using Ridge Regression, optimizing the model via cross-validation, and saving both performance results and the trained models for further use.
 
 # Comparison of Models
 The below data is also available in our GitHub repository under the name “mla_train_analysis.csv.”
