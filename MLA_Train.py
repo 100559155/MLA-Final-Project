@@ -31,7 +31,7 @@ from yapftests.yapf_test_helper import YAPFTest
 
 nlp = spacy.load('en_core_web_sm')
 
-'''
+''' Previous attempt of simple linear regression model 
 def mla_model(X,Y):
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
     model = LinearRegression()
@@ -57,6 +57,28 @@ mla_model(ratings,"Google Word2Vec Avg:")
 
 print(f"\n\n ****Newer MLA Model***\n\n")
 def mla_model(X, y, modelname):
+        """
+    mla_model - Train and evaluate a machine learning regression model using Ridge regression and pipeline optimization.
+
+    Purpose:
+        This method performs regression analysis using Ridge regression on the input features `X` to predict the target variable `y`.
+        It employs a machine learning pipeline that includes feature scaling, feature selection, and model training.
+        GridSearchCV is used for hyperparameter tuning of the Ridge regression alpha value.
+        The model's performance is evaluated using Root Mean Squared Error (RMSE) and R^2 score.
+        A scatter plot of actual vs predicted ratings is displayed and saved as a PNG image.
+        The trained best model is returned for future use or saving.
+
+    Parameters:
+        X (numpy.ndarray): Feature matrix used for training, typically vectorized text features (e.g., BoW, TF-IDF, LDA, etc.).
+        y (list or numpy.ndarray): Target values (ratings) corresponding to the input documents.
+        modelname (str): A string identifier for the model being trained, used for labeling outputs and saving results.
+
+    Returns:
+        tuple:
+            - rmse (float): Root Mean Squared Error of the predictions on the test set.
+            - r2 (float): R^2 Score indicating how well the model explains the variability in the target.
+            - best_estimator (sklearn.pipeline.Pipeline): The best performing model pipeline after hyperparameter tuning.
+    """
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     pipe = Pipeline([('scaler', StandardScaler()), ('select', SelectKBest(f_regression, k="all")),('ridge', Ridge())])
     grid = {'ridge__alpha':[0.01, 0.1, 1.0, 10.0, 100.0]}
