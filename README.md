@@ -38,7 +38,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Ignore context and semantic meaning.
 
 **TF-IDF (with and without sentiment integration)**
-	- The file "TF-IDF Avg_model.pkl" has the ML model generated for this section.
+	
+ 	- The file "TF-IDF Avg_model.pkl" has the ML model generated for this section.
 
 - Technique: Weighted rare but meaningful words higher.
 - Sentiment extension: Integrated SentiWordNet scores to capture emotional polarity.
@@ -49,7 +50,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Still bag-of-words-based; lacks deep semantic context.
 
 **Word2Vec (spaCy and Google’s model (billions of trained tokens))**
-	- The file "Word2Vec Avg_model.pkl" has the ML model generated for this section.
+	
+ 	- The file "Word2Vec Avg_model.pkl" has the ML model generated for this section.
 	- The file "Google Word2Vec Avg_model.pkl" has the ML model generated for this section.
 
 - In this section to be positively evaluated, we also used a Google trained token called “GoogleNews-vectors-negative300”  to provide further analysis into words and sentiment. 
@@ -62,7 +64,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Averaging diluted specific meanings; poor correlation due to context loss.
 
 **Topic Modeling (LDA)**
-	- The file "LDA_Topic_Model.pkl" has the ML model generated for this section.
+	
+ 	- The file "LDA_Topic_Model.pkl" has the ML model generated for this section.
 
 - Technique: Trained Latent Dirichlet Allocation with 15 topics and 40 passes.
 - Result:
@@ -72,7 +75,8 @@ After preprocessing, we applied the following strategies to convert the cleaned 
 - Cons: Weak correlation to numeric ratings; topics may not align with sentiment.
 
 **TextBlob Sentiment Scores**
-	- The file "TextBlob Sentiment_model.pkl" has the ML model generated for this section.
+	
+ 	- The file "TextBlob Sentiment_model.pkl" has the ML model generated for this section.
 
 - Technique: Polarity scores from TextBlob.
 - Result: Correlation = 0.2459
