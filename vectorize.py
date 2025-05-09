@@ -94,13 +94,17 @@ if __name__ == '__main__':
     bow_vector = CountVectorizer()
     bow_matrix = bow_vector.fit_transform(docs)
     bow_words = bow_vector.get_feature_names_out()
+    #dump(bow_matrix, 'bow_vectors.pkl')
+    dump(bow_vector, 'bow_vectorizer.pkl')
     
     #TF-IDF
 
     tfidf_vector = TfidfVectorizer()
     tfidf_matrix = tfidf_vector.fit_transform(docs)
     tfidf_words = tfidf_vector.get_feature_names_out()
-
+    #dump(tfidf_matrix, 'tfidf_vectors.pkl')
+    dump(tfidf_vector, 'tfidf_vectorizer.pkl')
+    
     sentimentscore = np.array([get_sentiment(w) for w in tfidf_words])
     net_sentiment = tfidf_matrix.dot(sentimentscore)
     correlation = np.corrcoef(net_sentiment, ratings)[0,1]
@@ -113,7 +117,11 @@ if __name__ == '__main__':
     one_vector = np.array([document_vector_largermodel(docx) for docx in docs])
 
     doc_vectors = np.array([document_vector(doc) for doc in docs])
-
+    #dump(doc_vectors, 'word2vec_avg.pkl')
+    #dump(one_vector, 'google_word2vec_avg.pkl')
+    dump(nlp, 'spacy_model.pkl')
+    word2vec.save('word2vec_model.bin')
+    
     #LDA Topic Modeling
 
     tokenization = [doc.split() for doc in docs]
@@ -130,13 +138,15 @@ if __name__ == '__main__':
     coherent = coherence_model.get_coherence()
     print(f"Coherence Score: {coherent:.4f}")
     correlations = topic_df.corr()['Rating'].drop('Rating')
-
+    dump(lda_model, 'lda_model.pkl')
+    dump(dictionary, 'lda_dictionary.pkl')
 
     #overarc writing and compiling
 
     sentiment_scores = [TextBlob(doc).sentiment.polarity for doc in docs]
     df['Sentiment'] = sentiment_scores
     print(df[['Rating', 'Sentiment']].corr())
+    #dump(np.array(sentiment_scores), 'sentiment_vectors.pkl')
 
     result_data = []
     for i in range(len(docs)):
