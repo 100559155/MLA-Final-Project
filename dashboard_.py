@@ -1,3 +1,63 @@
+'''
+Movie Rating Analysis Dashboard
+
+This script is used to implement a dashboard for analyzing movie ratings, review sentiment, 
+and model performance. The dashboard allows users to:
+    - View a comparison of actual vs predicted movie ratings.
+    - Analyze sentiment in movie reviews.
+    - Explore historical ratings data and view word clouds for movie reviews.
+    - Evaluate the performance of different regression models (BoW, TF-IDF, Word2Vec, etc.).
+
+Steps:
+    - Load pre-trained models for rating prediction, sentiment analysis, and topic modeling.
+    - Preprocess review text using NLP techniques (lemmatization, stop-word removal, etc.).
+    - Display interactive plots, including sentiment analysis and regression model performance.
+    - Provide a word cloud for visualizing the most frequent terms in movie reviews.
+    - Allow users to select a movie and input their own review for sentiment and rating prediction.
+
+Modules Used:
+    - pandas, numpy, matplotlib, plotly (for data handling and visualization)
+    - dash, dash_bootstrap_components (for building the web interface)
+    - joblib (for loading pre-trained models)
+    - spacy (for NLP text processing)
+    - textblob (for sentiment analysis)
+    - gensim (for topic modeling)
+    - wordcloud (for generating word clouds)
+    - sklearn (for feature extraction, regression models, and metrics)
+    - plotly.graph_objs (for interactive plots)
+
+Key Functions:
+    - preprocess(text: str) -> str:
+        Preprocesses the input text (removes punctuation, lemmatizes, and removes stop-words).
+
+    - create_model_card(model_row: pd.Series) -> dbc.Card:
+        Generates a visual card displaying the performance metrics (RMSE, R²) and regression plot of a model.
+
+    - generate_wordcloud(text: str) -> str:
+        Generates a word cloud image from the provided text and returns it as a base64 encoded PNG.
+
+    - get_sentiment_label(polarity: float) -> Tuple[str, str]:
+        Classifies the sentiment of the text based on polarity score and returns sentiment label and color.
+
+    - update_analysis(n_clicks: int, movie: str, review: str) -> Tuple:
+        Callback function that updates the dashboard with rating predictions, sentiment analysis,
+        and visualizations based on user input.
+
+Input:
+    - "5kmovies_preprocessed.csv": Contains cleaned movie review data.
+    - "5kmovies.csv": Contains original movie data.
+    - "mla_train_analysis.csv": Contains precomputed performance metrics for different models.
+    - Pre-trained models: Ridge regression models for BoW, TF-IDF, Word2Vec, etc.
+
+Output:
+    - Interactive dashboard displaying movie rating comparisons, sentiment analysis, and historical ratings.
+    - "mla_train_analysis.csv": CSV file with RMSE and R² scores for each model.
+
+'''
+
+# -------------------------------------------
+# Import necessary libraries
+# --
 
 import dash
 from dash import dcc, html, Input, Output, State
@@ -15,10 +75,29 @@ from textblob import TextBlob
 import gensim.downloader as api
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import joblib
 from io import BytesIO
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.pipeline import Pipeline
-
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+import pandas as pd
+import numpy as np
+import nltk
+from nltk.corpus import sentiwordnet as swn
+from nltk.corpus import wordnet as wn
+import gensim.downloader as api
+from gensim import corpora, models
+from gensim.models import KeyedVectors
+import spacy
+from scipy.stats import pearsonr
+from gensim.models import CoherenceModel
+from textblob import TextBlob
+bow_model = joblib.load("BoW Avg_model.pkl")
+tfidf_model = joblib.load("TF-IDF Avg_model.pkl")
+word2vec_model = joblib.load("Word2Vec Avg_model.pkl")
+google_w2v_model = joblib.load("Google Word2Vec Avg_model.pkl")
+sentiment_model = joblib.load("TextBlob Sentiment_model.pkl")
+ldas_model = joblib.load("LDA_Topic_Model.pkl")
 # Initialize the app
 app = dash.Dash(__name__,
                 external_stylesheets=[dbc.themes.LUX],
@@ -34,24 +113,6 @@ try:
     nlp = spacy.load('en_core_web_sm')
 except Exception as e:
     raise SystemExit(f"Initialization error: {e}")
-
-# Model loading
-MODELS = {
-    'BoW': 'BoW Avg_model.pkl',
-    'TF-IDF': 'TF-IDF Avg_model.pkl',
-    'Word2Vec': 'Word2Vec Avg_model.pkl',
-    'Google_W2V': 'Google Word2Vec Avg_model.pkl',
-    'Sentiment': 'TextBlob Sentiment_model.pkl',
-    'LDA': 'LDA_Topic_Model.pkl'
-}
-
-models = {}
-for name, path in MODELS.items():
-    try:
-        models[name] = joblib.load(f"models/{path}")
-    except Exception as e:
-        print(f"Error loading {name} model: {e}")
-        models[name] = None
 
 # Color scheme and constants
 COLORS = {
@@ -75,7 +136,6 @@ def create_model_card(model_row):
     try:
         # Load regression plot image
         image_path = f"assets/{model_row['Model'].replace(' ', '_')}_regression_plot.png"
-        print(image_path)
         encoded_image = base64.b64encode(open(image_path, 'rb').read()).decode()
     except FileNotFoundError:
         encoded_image = ''
@@ -175,12 +235,12 @@ app.layout = dbc.Container(fluid=True, style={'backgroundColor': COLORS['backgro
                         dbc.Tab([
                             dbc.Row([
                                 dbc.Col(create_model_card(row),
-                                width=6,  # Adjust based on your needs
+                                width=6,
                                 className="mb-4"
                             ) for _, row in analysis_df.iterrows()])
                         ], label='Model Performance'),
 
-                        # About Tab
+
                         dbc.Tab([
                             html.Div([
                                 html.H3("Project Overview", className="mb-4"),
@@ -192,20 +252,22 @@ app.layout = dbc.Container(fluid=True, style={'backgroundColor': COLORS['backgro
 
                             **Goals**:  
                             - Analyze movie review patterns  
-                            - Predict ratings using NLP techniques  
+                            - Model Predict Comparison - predicts a single movie review effect on Rating based on pretrained model
+                            - Historical Rating - shows the previous rating and current aggregated rating 
+                            - Sentiment Analysis - shows word biases as positive, negative or neutral
                             - Visualize model performance  
 
                             **Process**:  
                             1. Data Collection & Cleaning  
-                            2. Text Preprocessing  
-                            3. Feature Engineering  
+                            2. Text Preprocessing for the new review 
+                            3. Feature Engineering, vectorization and model training done based on loaded pickle files
                             4. Model Training & Validation  
                             5. Interactive Visualization  
                         ''', className="mb-4"),
                                 html.Hr(),
                                 html.H4("Technical Specifications", className="mt-4"),
                                 html.Ul([
-                                    html.Li("Python 3.8+"),
+                                    html.Li("Python 3.12.2"),
                                     html.Li("Dash/Plotly Framework"),
                                     html.Li("Scikit-learn Models"),
                                     html.Li("Gensim NLP Processing")
@@ -256,14 +318,60 @@ def update_analysis(n_clicks, movie, review):
     if review:
         # Preprocess review
         clean_review = preprocess(review)
+        docs = clean_review.split()
+        #This does the comparison for of Current review and how Previous review after current one is vectorized
 
-        # Generate predictions (example implementation)
+        # Load models and vectorizers
+        bow_vectorizer = joblib.load("bow_vectorizer.pkl")
+        tfidf_vectorizer = joblib.load("tfidf_vectorizer.pkl")
+        lda_vectorize = joblib.load("lda_model.pkl")
+        dictionary = joblib.load("lda_dictionary.pkl")
+        word2vec_vectorizer = joblib.load("spacy_model.pkl")  # spaCy model wrapper or callable
+        word2vec_Google_vectorizer = KeyedVectors.load("word2vec_model.bin")
+
+        # LDA vectorization
+        bowvector = dictionary.doc2bow(docs)
+        topic_distribution = lda_vectorize.get_document_topics(bowvector, minimum_probability=0.0)
+        lda_vector = np.array([prob for _, prob in
+                               lda_vectorize.get_document_topics(dictionary.doc2bow(clean_review.split()),
+                                                             minimum_probability=0.0)]).reshape(1, -1)
+
+        #  vector functions
+        def document_vector_largermodel(doc):
+            """For Google News Word2Vec"""
+            tokens = doc.split()
+            vectors = [word2vec_Google_vectorizer[word] for word in tokens if word in word2vec_Google_vectorizer]
+            return np.mean(vectors, axis=0) if vectors else np.zeros(300)
+
+        def document_vector(doc):
+            """For spaCy GloVe"""
+            return word2vec_vectorizer(doc).vector
+
+        # Vectorizations
+        bow_vector = bow_vectorizer.transform([clean_review]).toarray().mean(axis=1).reshape(1, -1)
+        tfidf_vector = tfidf_vectorizer.transform([clean_review]).toarray().mean(axis=1).reshape(1, -1)
+        vectorizedk_word2vec = document_vector(clean_review)
+        vectorized_word2vec =np.mean(vectorizedk_word2vec).reshape(1, -1)
+        vectorizedk_word2vec_google = document_vector_largermodel(clean_review)
+        vectorized_word2vec_google = np.mean(vectorizedk_word2vec_google).reshape(1, -1)
+
+        bow_pred = bow_model.predict(bow_vector)
+        tfidf_pred = tfidf_model.predict(tfidf_vector)
+        lda_pred = ldas_model.predict(lda_vector)
+        word2vec_pred = word2vec_model.predict(vectorized_word2vec)
+        google_word2vec_pred = google_w2v_model.predict(vectorized_word2vec_google)
+        #total prediction based on RMSE of each model * what they returned for aggregation of review
+        total_prediction = (0.0233 * bow_pred[0]) + (tfidf_pred[0] * 0.0218) + (lda_pred[0] * 0.0073) + (word2vec_pred[0] * 0.4859) + (google_word2vec_pred[0] * 0.4450 )
+
+        # Generate predictions
         predictions = {
-            'BoW': current_rating + 0.2,
-            'TF-IDF': current_rating - 0.1,
-            'Word2Vec': current_rating + 0.3,
-            'LDA': current_rating + 0.1
+            'BoW': bow_pred[0],
+            'TF-IDF': tfidf_pred[0],
+            'Word2Vec': word2vec_pred[0],
+            'LDA': lda_pred[0],
+            'Word2Vec_Google' : google_word2vec_pred[0],
         }
+
 
         # Rating Comparison Figure
         rating_fig = px.bar(
@@ -285,14 +393,42 @@ def update_analysis(n_clicks, movie, review):
 
         # Word Cloud
         wordcloud = generate_wordcloud(clean_review)
+        historical_data = pd.DataFrame({
+            'Movie Name': [movie, movie],
+            'Rating': [current_rating, total_prediction],
+            'Rating Type': ['Historical Average', 'Current Prediction'],
+            'Size': [15, 25]
+        })
 
         # Historical Ratings
-        historical_fig = px.line(
-            movie_data,
+        historical_fig = px.scatter(
+            historical_data,
+            x='Rating Type',
             y='Rating',
-            title="Historical Ratings Trend",
-            markers=True
+            color='Rating Type',
+            title=f"Rating Comparison for {movie}",
+            labels={'Rating': 'Score (0-10)'},
+            size='Size',
+            size_max=20,
+            hover_data=['Movie Name'],
+            color_discrete_map={
+                'Historical Average': '#1f77b4',
+                'Current Prediction': '#ff7f0e'
+            }
         )
+
+        # Customize layout
+        historical_fig.update_layout(
+            xaxis_title='Rating Category',
+            yaxis_range=[0, 10],
+            showlegend=False
+        )
+
+        historical_fig.update_traces(
+            marker=dict(line=dict(width=2, color='DarkSlateGrey')),
+            selector=dict(mode='markers')
+        )
+
 
     return (
         rating_display,
@@ -302,7 +438,7 @@ def update_analysis(n_clicks, movie, review):
         wordcloud,
         '' if review else dash.no_update
     )
-# Add this temporary route to test images
+
 
 
 if __name__ == '__main__':
