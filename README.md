@@ -125,7 +125,7 @@ We run the MLA Model on each feature set (Bag of Words, TF-IDF, Word2Vec, Sentim
 The below data is also available in our GitHub repository under the name “mla_train_analysis.csv.”
 ![Screenshot 2025-05-05 at 2 22 02 PM](https://github.com/user-attachments/assets/698a06d9-f414-4594-b88d-120ecbab9867)
 
-RMSE is in the range 0 to infinity where numbers closest to 0 mean stronger correlation and R-Squared is in the range negative infinity to 1. If R-Squared equals 1 then the predictions are perfect, if it equals 0 then the model does no better than predicting the mean of the target, and if it is less than 0 then the model is worse than using the mean predictor. RMSE is more sensitive to outliers because it squares the errors. 
+RMSE is in the range 0 to infinity where numbers closest to 0 mean stronger correlation and R-Squared is in the range negative infinity to 1. If R-Squared equals 1 then the predictions are perfect, if it equals 0 then the model does no better than predicting the mean of the target, and if it is less than 0 then the model is worse than using the mean predictor.  
 # Analysis of Results 
 **BoW** 
 ~4% of variance explained, and relatively high error.
