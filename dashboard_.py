@@ -258,11 +258,11 @@ app.layout = dbc.Container(fluid=True, style={'backgroundColor': COLORS['backgro
                             - Visualize model performance  
 
                             **Process**:  
-                            1. Data Collection & Cleaning  
-                            2. Text Preprocessing for the new review 
-                            3. Feature Engineering, vectorization and model training done based on loaded pickle files
-                            4. Model Training & Validation  
-                            5. Interactive Visualization  
+                            1. Data Collection & Cleaning  \n 
+                            2. Text Preprocessing for the new review \n
+                            3. Feature Engineering, vectorization and model training done based on loaded pickle files \n
+                            4. Model Training & Validation  \n
+                            5. Interactive Visualization  \n
                         ''', className="mb-4"),
                                 html.Hr(),
                                 html.H4("Technical Specifications", className="mt-4"),
